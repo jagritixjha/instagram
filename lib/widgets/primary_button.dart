@@ -3,9 +3,15 @@ import 'package:instagram/utils/constants.dart';
 import 'package:instagram/widgets/small_text.dart';
 
 class PrimaryButton extends StatelessWidget {
-  PrimaryButton({super.key, required this.text, required this.onPressed});
+  PrimaryButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.child,
+  });
   String text;
   void Function()? onPressed;
+  Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +24,14 @@ class PrimaryButton extends StatelessWidget {
         ),
       ),
       onPressed: onPressed,
-      child: SmallText(
-        text: text,
-        maxLine: 2,
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-      ),
+      child: child ??
+          SmallText(
+            text: text,
+            maxLine: 2,
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
     );
   }
 }

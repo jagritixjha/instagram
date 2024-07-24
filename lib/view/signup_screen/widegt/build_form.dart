@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:instagram/widgets/textformfield.dart';
 
 class BuildForm extends StatelessWidget {
-  BuildForm({super.key});
+  BuildForm({
+    super.key,
+    required this.emailController,
+    required this.usernameController,
+    required this.passwordController,
+    required this.confirmPasswordController,
+  });
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController emailController;
+  TextEditingController usernameController;
+  TextEditingController passwordController;
+  TextEditingController confirmPasswordController;
   @override
   Widget build(BuildContext context) {
     return Column(

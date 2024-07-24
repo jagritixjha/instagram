@@ -1,15 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:instagram/auth/auth_methods.dart';
+import 'package:instagram/utils/image_picker.dart';
+import 'package:instagram/view/navigation_screen/navigation_screen.dart';
 import 'package:instagram/view/signup_screen/signup.dart';
 import 'package:instagram/widgets/primary_button.dart';
 import 'package:instagram/widgets/secondary_button.dart';
 import 'package:instagram/widgets/text_button.dart';
 import 'package:instagram/widgets/textformfield.dart';
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  void signInMethod() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      String response = await AuthMethods().signInUser(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      if (response != 'success') {
+        AppExtension.showCustomSnackbar(msg: response, context: context);
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BottomNavigationScreen(),
+          ),
+        );
+      }
+    } catch (error) {
+      AppExtension.showCustomSnackbar(msg: error.toString(), context: context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +103,13 @@ class SignInScreen extends StatelessWidget {
               ),
               PrimaryButton(
                 text: 'Log in',
-                onPressed: () {},
+                onPressed: signInMethod,
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeCap: StrokeCap.round,
+                      )
+                    : null,
               ),
               const SizedBox(
                 height: 12,
@@ -72,7 +120,7 @@ class SignInScreen extends StatelessWidget {
                 text: 'Forgotten Password?',
                 onTap: () {},
               ),
-              Spacer(),
+              const Spacer(),
               SecondaryButton(
                 text: 'Create new account',
                 onPressed: () {

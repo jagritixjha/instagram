@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram/auth/auth_methods.dart';
 import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/view/signin_screen/signin.dart';
 import 'package:instagram/view/signup_screen/widegt/build_form.dart';
@@ -20,7 +21,11 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   Uint8List? _pickedProfileImage;
-
+  bool isLoading = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   void selectProfileImage() async {
     Uint8List pickedImage = await AppExtension.customImagePicker(
       imageSource: ImageSource.gallery,
@@ -34,6 +39,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else {
       log('error');
     }
+  }
+
+  void signUpMethod() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      String response = await AuthMethods().signUpUser(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        userName: usernameController.text.trim(),
+        bio: 'hello there!!',
+        file: _pickedProfileImage!,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      if (response != 'success') {
+        AppExtension.showCustomSnackbar(msg: response, context: context);
+      } else {
+        navigateToSignIn();
+      }
+    } catch (error) {
+      AppExtension.showCustomSnackbar(msg: error.toString(), context: context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void navigateToSignIn() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignInScreen(),
+      ),
+    );
   }
 
   @override
@@ -119,7 +161,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   )
                 ],
               ),
-              BuildForm(),
+              BuildForm(
+                emailController: emailController,
+                usernameController: usernameController,
+                passwordController: passwordController,
+                confirmPasswordController: confirmPasswordController,
+              ),
               Text.rich(
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
@@ -168,7 +215,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               PrimaryButton(
                 text: 'Sign up',
-                onPressed: () {},
+                onPressed: signUpMethod,
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeCap: StrokeCap.round,
+                      )
+                    : null,
               ),
               const SizedBox(
                 height: 20,
