@@ -3,18 +3,38 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/view/signin_screen/signin.dart';
 import 'package:instagram/view/signup_screen/widegt/build_form.dart';
 import 'package:instagram/widgets/primary_button.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_button.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   SignUpScreen({super.key});
 
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
   Uint8List? _pickedProfileImage;
 
-  void selectProfileImage() {}
+  void selectProfileImage() async {
+    Uint8List pickedImage = await AppExtension.customImagePicker(
+      imageSource: ImageSource.gallery,
+      context: context,
+    );
+
+    if (pickedImage.isNotEmpty) {
+      setState(() {
+        _pickedProfileImage = pickedImage;
+      });
+    } else {
+      log('error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
