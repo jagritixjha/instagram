@@ -80,8 +80,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    log('build called');
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       // backgroundColor: Colors.black54,
