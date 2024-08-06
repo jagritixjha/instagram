@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram/auth/auth_methods.dart';
+import 'package:instagram/utils/constants.dart';
 import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/view/signin_screen/signin.dart';
 import 'package:instagram/view/signup_screen/widegt/build_form.dart';
 import 'package:instagram/widgets/primary_button.dart';
+import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_button.dart';
 
@@ -85,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // backgroundColor: Colors.black54,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40),
+          padding: padding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -214,12 +216,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               PrimaryButton(
                 text: 'Sign up',
                 onPressed: signUpMethod,
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeCap: StrokeCap.round,
-                      )
-                    : null,
+                child: isLoading ? const CustomProgressIndicator() : null,
               ),
               const SizedBox(
                 height: 20,

@@ -5,9 +5,10 @@ import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/view/navigation_screen/navigation_screen.dart';
 import 'package:instagram/view/signup_screen/signup.dart';
 import 'package:instagram/widgets/primary_button.dart';
+import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/secondary_button.dart';
 import 'package:instagram/widgets/text_button.dart';
-import 'package:instagram/widgets/textformfield.dart';
+import 'package:instagram/widgets/text_form_field.dart';
 
 class SignInScreen extends StatefulWidget {
   SignInScreen({super.key});
@@ -104,12 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
               PrimaryButton(
                 text: 'Log in',
                 onPressed: signInMethod,
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeCap: StrokeCap.round,
-                      )
-                    : null,
+                child: isLoading ? const CustomProgressIndicator() : null,
               ),
               const SizedBox(
                 height: 12,

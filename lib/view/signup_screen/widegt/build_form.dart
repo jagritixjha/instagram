@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instagram/widgets/textformfield.dart';
+import 'package:instagram/widgets/text_form_field.dart';
 
 class BuildForm extends StatelessWidget {
   BuildForm({

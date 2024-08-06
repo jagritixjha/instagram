@@ -3,9 +3,10 @@ import 'package:instagram/view/explore_screen/explore_screen.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
 import 'package:instagram/view/profile_screen/profile_screen.dart';
 import 'package:instagram/view/reels_screen/reels_screen.dart';
+import 'package:instagram/view/upload_post_screen/upload_screen.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
-  BottomNavigationScreen({super.key});
+  const BottomNavigationScreen({super.key});
 
   @override
   State<BottomNavigationScreen> createState() => _BottomNavigationScreenState();
@@ -14,12 +15,12 @@ class BottomNavigationScreen extends StatefulWidget {
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   int _currentIndex = 0;
 
-  List<Widget> screens = const [
-    HomeScreen(),
+  List<Widget> screens = [
+    const HomeScreen(),
     ExploreScreen(),
-    HomeScreen(),
-    ReelsScreen(),
-    ProfileScreen(),
+    UploadPostScreen(),
+    const ReelsScreen(),
+    const ProfileScreen(),
   ];
 
   @override
