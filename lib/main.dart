@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/view/navigation_screen/navigation_screen.dart';
 import 'package:instagram/view/responsive_layout/responsive_layout_screen.dart';
-import 'package:instagram/view/signin_screen/signin.dart';
 import 'package:instagram/view/signup_screen/signup.dart';
 import 'package:instagram/view/web_view/main_screen.dart';
 import 'package:instagram/widgets/small_text.dart';
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(
+        ChangeNotifierProvider(
           create: (context) => UserProvider(),
         ),
       ],
@@ -61,7 +60,7 @@ class MyApp extends StatelessWidget {
               log(snapshot.connectionState.toString());
               if (snapshot.hasData) {
                 return ResponsiveLayout(
-                  mobileScreen: SignInScreen(),
+                  mobileScreen: const BottomNavigationScreen(),
                   webScreen: const WebView(),
                 );
               } else if (snapshot.hasError) {
@@ -69,7 +68,7 @@ class MyApp extends StatelessWidget {
               } else if (!snapshot.hasData) {
                 return SignUpScreen();
               } else {
-                return BottomNavigationScreen();
+                return const BottomNavigationScreen();
               }
             } else if (snapshot.connectionState == ConnectionState.waiting) {
               log(snapshot.connectionState.toString());
