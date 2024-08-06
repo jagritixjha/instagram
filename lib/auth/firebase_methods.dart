@@ -14,6 +14,7 @@ class FirebaseMethod {
     String uid,
     String userName,
     String profileImage,
+    String postId,
   ) async {
     String response = 'Some error occurred';
 
@@ -22,8 +23,9 @@ class FirebaseMethod {
         childName: 'post',
         imageFile: post,
         isPost: true,
+        postId: postId,
       );
-      String postId = const Uuid().v1();
+
       UserPost postDetails = UserPost(
         description: description,
         uid: uid,

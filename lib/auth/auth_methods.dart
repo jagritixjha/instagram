@@ -53,6 +53,7 @@ class AuthMethods {
           followers: [],
           following: [],
           photoUrl: photoUrl,
+          uid: credential.user!.uid,
         );
         await _firebaseFirestore
             .collection('user')

@@ -8,6 +8,7 @@ class UserModel {
   final List followers;
   final List following;
   final String photoUrl;
+  final String uid;
 
   UserModel({
     required this.userName,
@@ -17,6 +18,7 @@ class UserModel {
     required this.followers,
     required this.following,
     required this.photoUrl,
+    required this.uid,
   });
 
   // setter
@@ -28,6 +30,7 @@ class UserModel {
         "followers": followers,
         "following": following,
         "photoUrl": photoUrl,
+        "uid": uid,
       };
 
   static UserModel fromSnap(DocumentSnapshot snap) {
@@ -40,6 +43,7 @@ class UserModel {
       followers: snapShot['followers'],
       following: snapShot['following'],
       photoUrl: snapShot['photoUrl'],
+      uid: snapShot['uid'],
     );
   }
 }

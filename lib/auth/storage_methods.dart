@@ -11,9 +11,15 @@ class StorageMethod {
     required String childName,
     required Uint8List imageFile,
     bool isPost = false,
+    String? postId,
   }) async {
-    Reference ref =
-        _storage.ref().child(childName).child(_auth.currentUser!.uid);
+    Reference ref = isPost
+        ? _storage
+            .ref()
+            .child(childName)
+            .child(_auth.currentUser!.uid)
+            .child(postId!)
+        : _storage.ref().child(childName).child(_auth.currentUser!.uid);
 
     UploadTask task = ref.putData(imageFile);
 
