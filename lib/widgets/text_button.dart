@@ -20,6 +20,7 @@ class CustomTextButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SmallText(
+        textAlign: TextAlign.start,
         text: text,
         maxLine: 1,
         fontWeight: fontWeight ?? FontWeight.w600,
