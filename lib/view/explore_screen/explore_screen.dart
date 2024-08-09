@@ -97,7 +97,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
-                          crossAxisSpacing: 4,
+                          crossAxisSpacing: 2,
+                          mainAxisSpacing: 2,
                         ),
                         itemCount: (snapshot.data! as dynamic).docs.length,
                         itemBuilder: (context, index) {
