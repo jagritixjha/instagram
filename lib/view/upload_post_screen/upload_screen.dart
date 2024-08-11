@@ -31,7 +31,6 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
   Future pickImage() async {
     _pickedImage = await AppExtension.customImagePicker(
         imageSource: ImageSource.gallery, context: context);
-    log(_pickedImage.toString());
 
     setState(() {});
   }

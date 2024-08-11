@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/widgets/action_button.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_button.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +17,25 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var postDetails = (snapshot.data!.docs as dynamic)[index];
+
+    String postDateTime() {
+      final now = DateTime.now();
+      final difference = now.difference(postDetails['datePublish'].toDate());
+      log(difference.toString());
+
+      if (difference.inMinutes == 0) {
+        return 'just now';
+      } else if (difference.inMinutes <= 60) {
+        return '${difference.inMinutes}m ago';
+      } else if (difference.inHours <= 24) {
+        return '${difference.inHours} hours ago';
+      } else if (difference.inDays <= 7) {
+        return '${difference.inDays} days ago';
+      } else {
+        return DateFormat('d MMMM').format(postDetails['datePublish']);
+      }
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,30 +54,13 @@ class PostCard extends StatelessWidget {
           ),
           subtitle: SmallText(
             textAlign: TextAlign.start,
-            // text: '12 hours ago',
-            text: DateFormat('d MMMM')
-                .format(postDetails['datePublish'].toDate()),
+            text: postDateTime(),
             fontSize: 12,
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo.shade50,
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                child: const SmallText(
-                  text: 'Follow',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              SecondaryActionButton(text: 'Follow'),
               IconButton(
                 padding: EdgeInsets.zero,
                 onPressed: () {},

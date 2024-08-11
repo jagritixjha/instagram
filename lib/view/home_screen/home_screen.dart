@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
           FutureBuilder(
             future: FirebaseFirestore.instance
                 .collection('posts')
-                .orderBy('datePublish')
+                .orderBy('datePublish', descending: true)
                 .get(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
