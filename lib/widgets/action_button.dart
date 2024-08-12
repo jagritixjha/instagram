@@ -33,8 +33,8 @@ class SecondaryActionButton extends StatelessWidget {
       child: SmallText(
         text: text,
         fontSize: 14,
-        fontWeight: FontWeight.w400,
-        color: bgColor != null ? Colors.white : Colors.black,
+        fontWeight: FontWeight.w500,
+        color: bgColor != null ? Colors.white : Colors.black87,
       ),
     );
   }

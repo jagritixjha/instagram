@@ -105,7 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
               PrimaryButton(
                 text: 'Log in',
                 onPressed: signInMethod,
-                child: isLoading ? const CustomProgressIndicator() : null,
+                child: isLoading ? CustomProgressIndicator() : null,
               ),
               const SizedBox(
                 height: 12,

@@ -49,7 +49,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   future: fetchData(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return const CustomProgressIndicator();
+                      return CustomProgressIndicator(
+                        color: true,
+                      );
                     }
                     return Expanded(
                       child: ListView.builder(
@@ -90,7 +92,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       .get(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return const CustomProgressIndicator();
+                      return CustomProgressIndicator(
+                        color: true,
+                      );
                     }
                     return Expanded(
                       child: GridView.builder(

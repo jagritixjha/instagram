@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/controller/post_provider.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/view/navigation_screen/navigation_screen.dart';
 import 'package:instagram/view/responsive_layout/responsive_layout_screen.dart';
@@ -42,6 +43,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => UserPostProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -57,7 +61,7 @@ class MyApp extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
-              log(snapshot.connectionState.toString());
+              // log(snapshot.connectionState.toString());
               if (snapshot.hasData) {
                 return ResponsiveLayout(
                   mobileScreen: const BottomNavigationScreen(),
@@ -71,7 +75,7 @@ class MyApp extends StatelessWidget {
                 return const BottomNavigationScreen();
               }
             } else if (snapshot.connectionState == ConnectionState.waiting) {
-              log(snapshot.connectionState.toString());
+              // log(snapshot.connectionState.toString());
 
               return CircularProgressIndicator(
                 color: Colors.orange.shade700,

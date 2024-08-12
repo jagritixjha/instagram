@@ -21,7 +21,6 @@ class PostCard extends StatelessWidget {
     String postDateTime() {
       final now = DateTime.now();
       final difference = now.difference(postDetails['datePublish'].toDate());
-      log(difference.toString());
 
       if (difference.inMinutes == 0) {
         return 'just now';

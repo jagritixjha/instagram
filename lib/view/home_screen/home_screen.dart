@@ -63,7 +63,9 @@ class HomeScreen extends StatelessWidget {
                 .get(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const CustomProgressIndicator();
+                return CustomProgressIndicator(
+                  color: true,
+                );
               }
               return Expanded(
                 child: ListView.separated(

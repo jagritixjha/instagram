@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instagram/auth/storage_methods.dart';
+import 'package:instagram/modal/post_model.dart';
 import 'package:instagram/modal/user_model.dart' as model;
 import 'package:instagram/modal/user_model.dart';
 
@@ -19,6 +20,12 @@ class AuthMethods {
         .doc(currentUserDetails.uid)
         .get();
     return model.UserModel.fromSnap(snap);
+  }
+
+  Future<UserPost> getPostDetails({required String postId}) async {
+    DocumentSnapshot snap =
+        await _firebaseFirestore.collection('posts').doc(postId).get();
+    return UserPost.fromSnap(snap);
   }
 
   Future<String> signUpUser({

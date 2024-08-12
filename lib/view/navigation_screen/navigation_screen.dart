@@ -20,7 +20,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     ExploreScreen(),
     UploadPostScreen(),
     const ReelsScreen(),
-    const ProfileScreen(),
+    ProfileScreen(),
   ];
 
   @override

@@ -216,7 +216,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               PrimaryButton(
                 text: 'Sign up',
                 onPressed: signUpMethod,
-                child: isLoading ? const CustomProgressIndicator() : null,
+                child: isLoading ? CustomProgressIndicator() : null,
               ),
               const SizedBox(
                 height: 20,

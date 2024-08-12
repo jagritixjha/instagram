@@ -149,9 +149,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                               userName: userProvider.getUser!.userName,
                             );
                           },
-                          child: isloading
-                              ? const CustomProgressIndicator()
-                              : null,
+                          child: isloading ? CustomProgressIndicator() : null,
                         ),
                       ],
                     ),

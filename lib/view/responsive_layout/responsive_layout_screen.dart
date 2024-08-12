@@ -31,7 +31,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   @override
   Widget build(BuildContext context) {
-    log('---- responsive screen called');
+    // log('---- responsive screen called');
 
     return LayoutBuilder(
       builder: (context, constraints) {
