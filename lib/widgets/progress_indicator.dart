@@ -10,15 +10,13 @@ class CustomProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: SizedBox(
-          height: 24,
-          width: 24,
-          child: CircularProgressIndicator(
-            color: color ? primaryColor : Colors.white,
-            strokeCap: StrokeCap.round,
-          ),
+    return Center(
+      child: SizedBox(
+        height: 24,
+        width: 24,
+        child: CircularProgressIndicator(
+          color: color ? primaryColor : Colors.white,
+          strokeCap: StrokeCap.round,
         ),
       ),
     );

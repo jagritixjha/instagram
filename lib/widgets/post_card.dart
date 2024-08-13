@@ -3,20 +3,30 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/auth/firebase_methods.dart';
+import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/widgets/action_button.dart';
+import 'package:instagram/widgets/primary_button.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_button.dart';
+import 'package:instagram/widgets/text_form_field.dart';
 import 'package:intl/intl.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   PostCard({super.key, required this.snapshot, required this.index});
 
   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot;
   int index;
 
   @override
+  State<PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  @override
   Widget build(BuildContext context) {
-    var postDetails = (snapshot.data!.docs as dynamic)[index];
+    var postDetails = (widget.snapshot.data!.docs as dynamic)[widget.index];
+    TextEditingController commentController = TextEditingController();
 
     String postDateTime() {
       final now = DateTime.now();
@@ -32,6 +42,32 @@ class PostCard extends StatelessWidget {
         return '${difference.inDays} days ago';
       } else {
         return DateFormat('d MMMM').format(postDetails['datePublish']);
+      }
+    }
+
+    void deletePost() async {
+      String response =
+          await FirebaseMethod().deletePost(postDetails['postId']);
+      if (response == 'success') {
+        AppExtension.showCustomSnackbar(msg: 'post deleted', context: context);
+      } else {
+        AppExtension.showCustomSnackbar(msg: response, context: context);
+      }
+    }
+
+    void postComment() async {
+      String response = await FirebaseMethod().postComment(
+        postDetails['postId'],
+        commentController.text,
+        postDetails['uid'],
+        postDetails['username'],
+        postDetails['profileImage'],
+      );
+      if (response == 'success') {
+        AppExtension.showCustomSnackbar(
+            msg: 'comment posted', context: context);
+      } else {
+        AppExtension.showCustomSnackbar(msg: response, context: context);
       }
     }
 
@@ -60,14 +96,30 @@ class PostCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SecondaryActionButton(text: 'Follow'),
-              IconButton(
+              PopupMenuButton<String>(
+                color: Colors.white,
+                surfaceTintColor: Colors.white,
                 padding: EdgeInsets.zero,
-                onPressed: () {},
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(
-                  CupertinoIcons.ellipsis_vertical,
-                  size: 20,
-                ),
+                onSelected: (String value) {
+                  switch (value) {
+                    case 'delete post':
+                      setState(() {
+                        deletePost();
+                      });
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: 'delete post',
+                    child: ListTile(
+                      visualDensity: VisualDensity.compact,
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(Icons.delete),
+                      title: SmallText(text: 'Delete Post'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -107,7 +159,33 @@ class PostCard extends StatelessWidget {
             ),
             IconButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16, top: 40, bottom: 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomTextFormField(
+                              hintText: 'write comment',
+                              controller: commentController),
+                          const Spacer(),
+                          PrimaryButton(
+                            text: 'Post comment',
+                            onPressed: () {
+                              postComment();
+                              Navigator.pop(context);
+                            },
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
               visualDensity: VisualDensity.compact,
               icon: const Icon(
                 CupertinoIcons.chat_bubble,
@@ -152,7 +230,7 @@ class PostCard extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: [
               SmallText(

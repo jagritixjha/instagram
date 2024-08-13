@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:instagram/controller/post_provider.dart';
 import 'package:instagram/controller/user_provider.dart';
+import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/constants.dart';
 import 'package:instagram/widgets/action_button.dart';
 import 'package:instagram/widgets/post_grid_view.dart';
@@ -20,21 +21,16 @@ class ProfileCardWidget extends StatelessWidget {
     // this.postLength,
   });
 
-  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  UserModel snapshot;
   bool isCurrentUser;
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserModel? userProvider =
+        Provider.of<UserProvider>(context, listen: false).getUser;
     UserPostProvider userPostProvider =
         Provider.of<UserPostProvider>(context, listen: false);
 
-    // final post = FirebaseFirestore.instance
-    //     .collection('posts')
-    //     .where('uid', isEqualTo: userProvider.getUser!.uid)
-    //     .get();
-    // final postLength = post.docs.length;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -46,7 +42,7 @@ class ProfileCardWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(userProvider.getUser!.photoUrl),
+                backgroundImage: NetworkImage(userProvider!.photoUrl),
               ),
               const Spacer(),
               CustomRichText(
@@ -55,12 +51,12 @@ class ProfileCardWidget extends StatelessWidget {
               ),
               const Spacer(),
               CustomRichText(
-                str: userProvider.getUser!.followers.length.toString(),
+                str: userProvider.followers.length.toString(),
                 subStr: 'followers',
               ),
               const Spacer(),
               CustomRichText(
-                str: userProvider.getUser!.followers.length.toString(),
+                str: userProvider.followers.length.toString(),
                 subStr: 'following',
               ),
             ],
@@ -69,13 +65,13 @@ class ProfileCardWidget extends StatelessWidget {
             height: 8,
           ),
           SmallText(
-            text: userProvider.getUser!.userName,
+            text: userProvider.userName,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
           SmallText(
-            text: userProvider.getUser!.bio,
+            text: userProvider.bio,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,

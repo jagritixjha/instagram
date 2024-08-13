@@ -81,7 +81,7 @@ class FirebaseMethod {
       if (text.isNotEmpty) {
         String commentId = Uuid().v1();
         _firestore
-            .collection('post')
+            .collection('posts')
             .doc(postId)
             .collection('comments')
             .doc(commentId)
@@ -104,7 +104,7 @@ class FirebaseMethod {
   Future<String> deletePost(String postId) async {
     String response = 'Some error occurred';
     try {
-      await _firestore.collection('post').doc(postId).delete();
+      await _firestore.collection('posts').doc(postId).delete();
       response = 'success';
     } catch (error) {
       response = error.toString();

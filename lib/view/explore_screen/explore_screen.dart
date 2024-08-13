@@ -1,8 +1,15 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/auth/auth_methods.dart';
+import 'package:instagram/controller/user_provider.dart';
+import 'package:instagram/modal/user_model.dart';
+import 'package:instagram/view/profile_screen/profile_screen.dart';
 import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_form_field.dart';
+import 'package:provider/provider.dart';
 
 class ExploreScreen extends StatefulWidget {
   ExploreScreen({super.key});
@@ -49,37 +56,47 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   future: fetchData(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return CustomProgressIndicator(
-                        color: true,
+                      return Expanded(
+                        child: CustomProgressIndicator(
+                          color: true,
+                        ),
                       );
                     }
+
                     return Expanded(
                       child: ListView.builder(
                         itemCount: (snapshot.data as dynamic).docs.length,
                         itemBuilder: (context, index) {
+                          var userDetails =
+                              (snapshot.data as dynamic).docs[index];
                           return ListTile(
                             visualDensity: VisualDensity.compact,
                             leading: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                (snapshot.data! as dynamic).docs[index]
-                                    ['photoUrl'],
+                                userDetails['photoUrl'],
                               ),
                               radius: 30,
                             ),
                             title: SmallText(
                               textAlign: TextAlign.left,
-                              text: (snapshot.data! as dynamic).docs[index]
-                                  ['userName'],
+                              text: userDetails['userName'],
                             ),
                             subtitle: SmallText(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               color: Colors.black54,
                               textAlign: TextAlign.left,
-                              text: (snapshot.data! as dynamic).docs[index]
-                                  ['bio'],
+                              text: userDetails['bio'],
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileScreen(snapshot: userDetails),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

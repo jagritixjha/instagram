@@ -107,14 +107,12 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
             )
           : ListView(
               children: [
-                SizedBox(
+                Container(
                   height: 450,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: MemoryImage(_pickedImage!),
-                      ),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: MemoryImage(_pickedImage!),
                     ),
                   ),
                 ),

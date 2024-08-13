@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:instagram/controller/user_provider.dart';
+import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/widgets/post_grid_view.dart';
 import 'package:instagram/widgets/profile_card.dart';
 import 'package:instagram/widgets/progress_indicator.dart';
@@ -11,7 +13,8 @@ import 'package:instagram/widgets/small_text.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({super.key});
+  var snapshot;
+  ProfileScreen({super.key, this.snapshot});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -19,19 +22,19 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final String _userId = FirebaseAuth.instance.currentUser!.uid;
-
   String? username;
-
-  getData() {}
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserModel? userProvider =
+        Provider.of<UserProvider>(context, listen: false).getUser;
+
     return Scaffold(
       appBar: AppBar(
         title: SmallText(
-          text: userProvider.getUser!.userName,
+          text: widget.snapshot != null
+              ? widget.snapshot['userName']
+              : userProvider!.userName,
         ),
         actions: [
           IconButton(
@@ -56,10 +59,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: true,
                   );
                 }
-                // username = (snapshot.data!.docs as dynamic)['userName'];
-                // log(username!);
                 return ProfileCardWidget(
-                  snapshot: snapshot,
+                  snapshot: userProvider!,
                   isCurrentUser: true,
                 );
               }),

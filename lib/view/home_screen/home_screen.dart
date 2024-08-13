@@ -63,8 +63,10 @@ class HomeScreen extends StatelessWidget {
                 .get(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return CustomProgressIndicator(
-                  color: true,
+                return Expanded(
+                  child: CustomProgressIndicator(
+                    color: true,
+                  ),
                 );
               }
               return Expanded(
