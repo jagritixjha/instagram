@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,21 +47,20 @@ class FirebaseMethod {
     }
   }
 
-  String likePost(
-    String postId,
-    String uid,
-    List like,
-  ) {
+  Future<String> likePost(String postId, String uid, List likes,
+      {required bool isLiked}) async {
     String response = 'Some error occurred';
     try {
-      if (like.contains(uid)) {
-        _firestore.collection('post').doc(postId).update({
-          'likes': FieldValue.arrayRemove([uid])
+      if (!isLiked) {
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayRemove([uid]),
         });
+        log('removed');
       } else {
-        _firestore.collection('post').doc(postId).update({
-          'likes': FieldValue.arrayUnion([uid])
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayUnion([uid]),
         });
+        log('added');
       }
       response = 'success';
     } catch (error) {
@@ -108,6 +108,16 @@ class FirebaseMethod {
       response = 'success';
     } catch (error) {
       response = error.toString();
+    }
+    return response;
+  }
+
+  Future<String> savePost(String postUid,String userId,) async{
+    String response='some error occurred';
+    try{
+      await _firestore.collection('users').doc(userId).update(data)
+    }catch(e){
+      response = e.toString();
     }
     return response;
   }

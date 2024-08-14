@@ -11,6 +11,7 @@ import 'package:instagram/modal/user_model.dart';
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  get currentUser => _auth.currentUser!.uid;
 
   Future<model.UserModel> getUserDetails(String? userUid) async {
     User currentUserDetails = _auth.currentUser!;
