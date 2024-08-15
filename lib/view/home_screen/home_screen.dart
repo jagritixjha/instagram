@@ -76,7 +76,6 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) => PostCard(
                     snapshot: snapshot,
                     index: index,
-                    userUid: FirebaseAuth.instance.currentUser!.uid,
                   ),
                   separatorBuilder: (context, index) {
                     return Divider(

@@ -19,7 +19,7 @@ class SecondaryActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         alignment: Alignment.center,
         backgroundColor: bgColor ?? Colors.indigo.shade50,

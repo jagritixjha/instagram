@@ -95,7 +95,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 12,
               ),
               CustomTextFormField(
-                isObsecured: true,
+                obscureText: true,
+                isPassword: true,
                 hintText: 'Password',
                 controller: passwordController,
               ),

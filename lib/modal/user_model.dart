@@ -7,6 +7,7 @@ class UserModel {
   final String bio;
   final List followers;
   final List following;
+  final List savedPosts;
   final String photoUrl;
   final String uid;
 
@@ -17,6 +18,7 @@ class UserModel {
     required this.bio,
     required this.followers,
     required this.following,
+    required this.savedPosts,
     required this.photoUrl,
     required this.uid,
   });
@@ -29,6 +31,7 @@ class UserModel {
         "bio": bio,
         "followers": followers,
         "following": following,
+        "savedPosts": savedPosts,
         "photoUrl": photoUrl,
         "uid": uid,
       };
@@ -42,6 +45,7 @@ class UserModel {
       bio: snapShot['bio'],
       followers: snapShot['followers'],
       following: snapShot['following'],
+      savedPosts: snapShot['savedPosts'],
       photoUrl: snapShot['photoUrl'],
       uid: snapShot['uid'],
     );

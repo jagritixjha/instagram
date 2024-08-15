@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:instagram/controller/post_provider.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/view/navigation_screen/navigation_screen.dart';
 import 'package:instagram/view/responsive_layout/responsive_layout_screen.dart';
+import 'package:instagram/view/signin_screen/signin.dart';
 import 'package:instagram/view/signup_screen/signup.dart';
 import 'package:instagram/view/web_view/main_screen.dart';
 import 'package:instagram/widgets/small_text.dart';
@@ -28,6 +30,7 @@ void main() async {
           )
         : DefaultFirebaseOptions.currentPlatform,
   );
+  // await addSavedPostsFieldToAllUsers();
   runApp(
     const MyApp(),
   );
@@ -70,7 +73,7 @@ class MyApp extends StatelessWidget {
               } else if (snapshot.hasError) {
                 return const SmallText(text: 'connection failed');
               } else if (!snapshot.hasData) {
-                return SignUpScreen();
+                return SignInScreen();
               } else {
                 return const BottomNavigationScreen();
               }
@@ -97,3 +100,29 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*Future<void> addSavedPostsFieldToAllUsers() async {
+  CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('user');
+
+  try {
+    // Fetch all documents in the 'user' collection
+    QuerySnapshot querySnapshot = await usersCollection.get();
+
+    // Iterate through each document
+    for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+      // Get the document data
+      Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+
+      // Check if the document data is not null and doesn't contain 'savedPosts'
+      if (data != null && !data.containsKey('savedPosts')) {
+        // Update the document by adding the 'savedPosts' field with an empty array
+        await usersCollection.doc(doc.id).update({'savedPosts': []});
+      }
+    }
+
+    print('Added empty savedPosts array to all user documents.');
+  } catch (e) {
+    print('Error updating user documents: $e');
+  }
+}*/

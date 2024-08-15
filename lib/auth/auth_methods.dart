@@ -60,6 +60,7 @@ class AuthMethods {
           bio: bio,
           followers: [],
           following: [],
+          savedPosts: [],
           photoUrl: photoUrl,
           uid: credential.user!.uid,
         );

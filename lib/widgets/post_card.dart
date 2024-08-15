@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/auth/firebase_methods.dart';
 import 'package:instagram/controller/user_provider.dart';
+import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/widgets/action_button.dart';
 import 'package:instagram/widgets/primary_button.dart';
@@ -13,18 +14,17 @@ import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_button.dart';
 import 'package:instagram/widgets/text_form_field.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
   PostCard({
     super.key,
     required this.snapshot,
     required this.index,
-    required this.userUid,
   });
 
   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot;
   int index;
-  String userUid;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -33,6 +33,8 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   TextEditingController commentController = TextEditingController();
   bool isLiked = false;
+  bool isSaved = false;
+  bool following = false;
 
   dynamic get postDetails {
     return widget.snapshot.data!.docs[widget.index];
@@ -51,7 +53,9 @@ class _PostCardState extends State<PostCard> {
     } else if (difference.inDays <= 7) {
       return '${difference.inDays} days ago';
     } else {
-      return DateFormat('d MMMM').format(postDetails['datePublish']);
+      return DateFormat('d MMMM').format(
+        postDetails['datePublish'].toDate(),
+      );
     }
   }
 
@@ -79,10 +83,47 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
+  void savePost() async {
+    String response =
+        await FirebaseMethod().savePost(postDetails['postId'], isSaved);
+
+    if (response == 'success') {
+      AppExtension.showCustomSnackbar(
+          msg: isSaved ? 'post saved' : 'post unsaved', context: context);
+      setState(() {
+        isSaved = !isSaved;
+      });
+    } else {
+      AppExtension.showCustomSnackbar(msg: response, context: context);
+    }
+  }
+
+  void followAccount() async {
+    String response =
+        await FirebaseMethod().followAccount(following, postDetails['uid']);
+
+    if (response == 'success') {
+      AppExtension.showCustomSnackbar(
+          msg: following ? 'account followed' : 'account unfollowed',
+          context: context);
+      setState(() {
+        following = !following;
+      });
+    } else {
+      AppExtension.showCustomSnackbar(msg: response, context: context);
+    }
+  }
+
+  UserModel? user;
+
   @override
   void initState() {
     super.initState();
-    isLiked = postDetails['likes'].contains(widget.userUid);
+    user = Provider.of<UserProvider>(context, listen: false).getUser;
+    following = user!.following.contains(postDetails['uid']);
+    isSaved = user!.savedPosts.contains(postDetails['postId']);
+    isLiked = postDetails['likes'].contains(user!.uid);
+    commentSnapshot;
   }
 
   Future<void> likePost() async {
@@ -92,7 +133,7 @@ class _PostCardState extends State<PostCard> {
     log(isLiked.toString());
     String response = await FirebaseMethod().likePost(
       postDetails['postId'],
-      widget.userUid,
+      user!.uid,
       postDetails['likes'],
       isLiked: isLiked,
     );
@@ -105,6 +146,21 @@ class _PostCardState extends State<PostCard> {
     } else {
       AppExtension.showCustomSnackbar(msg: response, context: context);
     }
+  }
+
+  String commentsCount = 'Loading...';
+  get commentSnapshot async {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection('posts')
+        .doc(postDetails['postId'])
+        .collection('comments')
+        .get();
+
+    setState(() {
+      commentsCount = snapshot.docs.length.toString();
+    });
+    return snapshot;
   }
 
   @override
@@ -133,7 +189,10 @@ class _PostCardState extends State<PostCard> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SecondaryActionButton(text: 'Follow'),
+              SecondaryActionButton(
+                text: following ? 'Following' : 'Follow',
+                onPressed: followAccount,
+              ),
               PopupMenuButton<String>(
                 color: Colors.white,
                 surfaceTintColor: Colors.white,
@@ -177,90 +236,37 @@ class _PostCardState extends State<PostCard> {
         ),
         Row(
           children: [
-            IconButton(
-              padding: EdgeInsets.zero,
+            PostActionButtons(
+              text: postDetails['likes'].length.toString(),
+              icon: isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+              iconColor: isLiked ? Colors.red : Colors.black,
               onPressed: likePost,
-              visualDensity: VisualDensity.compact,
-              icon: Icon(
-                isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                size: 28,
-                color: isLiked ? Colors.red : Colors.black,
-              ),
-            ),
-            const SmallText(
-              text: '187K',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
             ),
             const SizedBox(
               width: 4,
             ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16, top: 40, bottom: 16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CustomTextFormField(
-                              hintText: 'write comment',
-                              controller: commentController),
-                          const Spacer(),
-                          PrimaryButton(
-                            text: 'Post comment',
-                            onPressed: () {
-                              postComment();
-                              Navigator.pop(context);
-                            },
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              visualDensity: VisualDensity.compact,
-              icon: const Icon(
-                CupertinoIcons.chat_bubble,
-                size: 28,
-                color: Colors.black,
-              ),
-            ),
-            const SmallText(
-              text: '1,485',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+            PostActionButtons(
+              text: commentsCount,
+              icon: CupertinoIcons.chat_bubble,
+              onPressed: buildCommentSection,
             ),
             const SizedBox(
               width: 4,
             ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {},
-              visualDensity: VisualDensity.compact,
-              icon: const Icon(
-                Icons.navigation_outlined,
-                size: 28,
-                color: Colors.black,
-              ),
-            ),
-            const SmallText(
+            PostActionButtons(
               text: '69.6K',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+              icon: Icons.navigation_outlined,
+              onPressed: () {},
             ),
             const Spacer(),
             IconButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
+              onPressed: savePost,
               visualDensity: VisualDensity.comfortable,
-              icon: const Icon(
-                CupertinoIcons.bookmark,
+              icon: Icon(
+                isSaved
+                    ? CupertinoIcons.bookmark_solid
+                    : CupertinoIcons.bookmark,
                 size: 24,
                 color: Colors.black,
               ),
@@ -290,6 +296,65 @@ class _PostCardState extends State<PostCard> {
           ),
         )
       ],
+    );
+  }
+
+  void buildCommentSection() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding:
+              const EdgeInsets.only(left: 16.0, right: 16, top: 40, bottom: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomTextFormField(
+                  hintText: 'write comment', controller: commentController),
+              const Spacer(),
+              PrimaryButton(
+                text: 'Post comment',
+                onPressed: () {
+                  postComment();
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PostActionButtons extends StatelessWidget {
+  const PostActionButtons({
+    super.key,
+    required this.icon,
+    required this.text,
+    required this.onPressed,
+    this.iconColor,
+  });
+
+  final String text;
+  final IconData icon;
+  final void Function()? onPressed;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: onPressed,
+      icon: Icon(
+        icon,
+        size: 28,
+        color: iconColor ?? Colors.black,
+      ),
+      label: SmallText(
+        text: text,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
     );
   }
 }

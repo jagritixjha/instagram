@@ -1,28 +1,51 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends StatefulWidget {
   CustomTextFormField({
     super.key,
     required this.hintText,
     required this.controller,
-    this.isObsecured = false,
     this.onFieldSubmitted,
+    this.obscureText = false,
+    this.isPassword = false,
   });
 
   String hintText;
   TextEditingController controller;
-  bool isObsecured;
+  bool obscureText;
+  bool isPassword;
+
   void Function(String)? onFieldSubmitted;
 
   @override
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: isObsecured,
+      controller: widget.controller,
+      obscureText: widget.obscureText,
       textInputAction: TextInputAction.next,
       scribbleEnabled: true,
       decoration: InputDecoration(
-        labelText: hintText,
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    widget.obscureText = !widget.obscureText;
+                  });
+                },
+                icon: Icon(
+                  widget.obscureText
+                      ? CupertinoIcons.eye_slash
+                      : CupertinoIcons.eye,
+                ),
+              )
+            : null,
+        labelText: widget.hintText,
         labelStyle: TextStyle(
           fontSize: 14,
           color: Colors.grey.shade600,
@@ -44,7 +67,7 @@ class CustomTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
-      onFieldSubmitted: onFieldSubmitted,
+      onFieldSubmitted: widget.onFieldSubmitted,
     );
   }
 }

@@ -36,15 +36,17 @@ class BuildForm extends StatelessWidget {
           height: 12,
         ),
         CustomTextFormField(
-          isObsecured: true,
+          obscureText: true,
           hintText: 'Enter password',
+          isPassword: true,
           controller: passwordController,
         ),
         const SizedBox(
           height: 12,
         ),
         CustomTextFormField(
-          isObsecured: true,
+          obscureText: true,
+          isPassword: true,
           hintText: 'Confirm password',
           controller: confirmPasswordController,
         ),

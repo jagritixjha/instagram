@@ -2,12 +2,14 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instagram/auth/storage_methods.dart';
 import 'package:instagram/modal/post_model.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseMethod {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final User _auth = FirebaseAuth.instance.currentUser!;
 
   Future<String> uploadPost(
     String description,
@@ -69,6 +71,50 @@ class FirebaseMethod {
     return response;
   }
 
+  Future<String> savePost(String postId, bool isSaved) async {
+    String response = 'some error occurred';
+    try {
+      if (isSaved) {
+        await _firestore.collection('user').doc(_auth.uid).update({
+          'savedPosts': FieldValue.arrayRemove([postId]),
+        });
+      } else {
+        await _firestore.collection('user').doc(_auth.uid).update({
+          'savedPosts': FieldValue.arrayUnion([postId]),
+        });
+      }
+      response = 'success';
+    } catch (error) {
+      response = error.toString();
+    }
+    return response;
+  }
+
+  Future<String> followAccount(bool follow, String postUserUid) async {
+    String response = 'some error occurred';
+    try {
+      if (follow) {
+        await _firestore.collection('user').doc(_auth.uid).update({
+          'following': FieldValue.arrayRemove([postUserUid]),
+        });
+        await _firestore.collection('user').doc(postUserUid).update({
+          'followers': FieldValue.arrayRemove([_auth.uid]),
+        });
+      } else {
+        await _firestore.collection('user').doc(_auth.uid).update({
+          'following': FieldValue.arrayUnion([postUserUid]),
+        });
+        await _firestore.collection('user').doc(postUserUid).update({
+          'followers': FieldValue.arrayUnion([_auth.uid]),
+        });
+      }
+      response = 'success';
+    } catch (error) {
+      response = error.toString();
+    }
+    return response;
+  }
+
   Future<String> postComment(
     String postId,
     String text,
@@ -112,13 +158,13 @@ class FirebaseMethod {
     return response;
   }
 
-  Future<String> savePost(String postUid,String userId,) async{
-    String response='some error occurred';
-    try{
-      await _firestore.collection('users').doc(userId).update(data)
-    }catch(e){
-      response = e.toString();
-    }
-    return response;
-  }
+  // Future<String> savePost(String postUid,String userId,) async{
+  //   String response='some error occurred';
+  //   try{
+  //     await _firestore.collection('users').doc(userId).update(data)
+  //   }catch(e){
+  //     response = e.toString();
+  //   }
+  //   return response;
+  // }
 }
