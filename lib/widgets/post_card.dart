@@ -248,6 +248,7 @@ class _PostCardState extends State<PostCard> {
             PostActionButtons(
               text: commentsCount,
               icon: CupertinoIcons.chat_bubble,
+              // icon: CupertinoIcons.chat_bubble,
               onPressed: buildCommentSection,
             ),
             const SizedBox(
@@ -255,7 +256,7 @@ class _PostCardState extends State<PostCard> {
             ),
             PostActionButtons(
               text: '69.6K',
-              icon: Icons.navigation_outlined,
+              icon: CupertinoIcons.arrow_turn_right_up,
               onPressed: () {},
             ),
             const Spacer(),
@@ -265,10 +266,10 @@ class _PostCardState extends State<PostCard> {
               visualDensity: VisualDensity.comfortable,
               icon: Icon(
                 isSaved
-                    ? CupertinoIcons.bookmark_solid
+                    ? CupertinoIcons.bookmark_fill
                     : CupertinoIcons.bookmark,
                 size: 24,
-                color: Colors.black,
+                color: Colors.black87,
               ),
             ),
           ],
@@ -345,9 +346,13 @@ class PostActionButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: onPressed,
+      style: TextButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        overlayColor: Colors.transparent,
+      ),
       icon: Icon(
         icon,
-        size: 28,
+        size: 24,
         color: iconColor ?? Colors.black,
       ),
       label: SmallText(

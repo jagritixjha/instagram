@@ -79,6 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 }
                 return PostGridView(
+                  isProfile: true,
                   snapshot: snapshot,
                 );
               })

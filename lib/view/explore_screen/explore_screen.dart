@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:instagram/auth/auth_methods.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/modal/user_model.dart';
+import 'package:instagram/view/home_screen/home_screen.dart';
 import 'package:instagram/view/profile_screen/profile_screen.dart';
+import 'package:instagram/widgets/post_grid_view.dart';
 import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_form_field.dart';
@@ -113,7 +115,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         color: true,
                       );
                     }
-                    return Expanded(
+                    return PostGridView(snapshot: snapshot);
+                    /*Expanded(
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
@@ -121,20 +124,32 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           crossAxisSpacing: 2,
                           mainAxisSpacing: 2,
                         ),
-                        itemCount: (snapshot.data! as dynamic).docs.length,
+                        itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            height: 210,
-                            width: 200,
-                            child: Image.network(
-                              (snapshot.data! as dynamic).docs[index]
-                                  ['photoUrl'],
-                              fit: BoxFit.cover,
+                          DocumentSnapshot post = snapshot.data!.docs[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(
+                                    post: post,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                              height: 210,
+                              width: 200,
+                              child: Image.network(
+                                post['photoUrl'],
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           );
                         },
                       ),
-                    );
+                    );*/
                   }),
         ],
       ),
