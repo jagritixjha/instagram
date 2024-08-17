@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:instagram/controller/post_provider.dart';
 import 'package:instagram/controller/user_provider.dart';
+import 'package:instagram/modal/post_model.dart';
 import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/constants.dart';
 import 'package:instagram/widgets/action_button.dart';
@@ -16,47 +17,71 @@ import 'package:provider/provider.dart';
 class ProfileCardWidget extends StatelessWidget {
   ProfileCardWidget({
     super.key,
-    required this.snapshot,
-    this.isCurrentUser = false,
-    // this.postLength,
+    required this.user,
   });
-
-  UserModel snapshot;
-  bool isCurrentUser;
-
+  UserModel? user;
+  String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
-    UserModel? userProvider =
-        Provider.of<UserProvider>(context, listen: false).getUser;
-    UserPostProvider userPostProvider =
-        Provider.of<UserPostProvider>(context, listen: false);
-
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 40, bottom: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
+              user!.uid != _currentUserId
+                  ? IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back_rounded),
+                    )
+                  : Container(),
+              // const SizedBox(
+              //   width: 16,
+              // ),
+              SmallText(
+                text: user!.userName,
+              ),
+              const Spacer(),
+              user!.uid == _currentUserId
+                  ? IconButton(
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                      },
+                      icon: const Icon(Icons.logout_rounded),
+                    )
+                  : Container(),
+            ],
+          ),
+          Divider(
+            height: 0,
+            thickness: 0,
+            color: Colors.indigo.shade50,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Row(
+            children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(userProvider!.photoUrl),
+                backgroundImage: NetworkImage(user!.photoUrl),
               ),
               const Spacer(),
               CustomRichText(
-                str: userPostProvider.postLength.toString(),
+                str: postLength.toString(),
                 subStr: 'posts',
               ),
               const Spacer(),
               CustomRichText(
-                str: userProvider.followers.length.toString(),
+                str: user!.followers.length.toString(),
                 subStr: 'followers',
               ),
               const Spacer(),
               CustomRichText(
-                str: userProvider.followers.length.toString(),
+                str: user!.following.length.toString(),
                 subStr: 'following',
               ),
             ],
@@ -65,13 +90,13 @@ class ProfileCardWidget extends StatelessWidget {
             height: 8,
           ),
           SmallText(
-            text: userProvider.userName,
+            text: user!.userName,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
           SmallText(
-            text: userProvider.bio,
+            text: user!.bio,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -83,13 +108,12 @@ class ProfileCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SecondaryActionButton(
-                text: isCurrentUser ? 'Edit profile' : 'Follow',
+                text: user!.uid == _currentUserId ? 'Edit profile' : 'Follow',
                 isProfile: true,
                 bgColor: primaryColor,
               ),
               SecondaryActionButton(
                 text: 'Message',
-                isProfile: true,
               ),
             ],
           )

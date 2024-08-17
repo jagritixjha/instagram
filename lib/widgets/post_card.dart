@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/auth/firebase_methods.dart';
 import 'package:instagram/controller/user_provider.dart';
+import 'package:instagram/modal/post_model.dart';
 import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/widgets/action_button.dart';
@@ -115,7 +116,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   UserModel? user;
-
+  UserPost? post;
   @override
   void initState() {
     super.initState();
@@ -124,6 +125,8 @@ class _PostCardState extends State<PostCard> {
     isSaved = user!.savedPosts.contains(postDetails['postId']);
     isLiked = postDetails['likes'].contains(user!.uid);
     commentSnapshot;
+    post =
+        UserPost.fromSnap(widget.snapshot.data!.docs.elementAt(widget.index));
   }
 
   Future<void> likePost() async {
@@ -174,11 +177,11 @@ class _PostCardState extends State<PostCard> {
           contentPadding: const EdgeInsets.only(left: 12),
           visualDensity: VisualDensity.compact,
           leading: CircleAvatar(
-            backgroundImage: NetworkImage(postDetails['profileImage']),
+            backgroundImage: NetworkImage(post!.profileImage),
           ),
           title: SmallText(
             textAlign: TextAlign.start,
-            text: postDetails['username'],
+            text: post!.username,
             fontSize: 12,
           ),
           subtitle: SmallText(
@@ -228,7 +231,7 @@ class _PostCardState extends State<PostCard> {
             // color: Colors.red,
             image: DecorationImage(
               image: NetworkImage(
-                postDetails['photoUrl'],
+                post!.photoUrl,
               ),
               fit: BoxFit.cover,
             ),
@@ -237,7 +240,7 @@ class _PostCardState extends State<PostCard> {
         Row(
           children: [
             PostActionButtons(
-              text: postDetails['likes'].length.toString(),
+              text: post!.likes.length.toString(),
               icon: isLiked ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
               iconColor: isLiked ? Colors.red : Colors.black,
               onPressed: likePost,
@@ -279,8 +282,7 @@ class _PostCardState extends State<PostCard> {
           child: Row(
             children: [
               SmallText(
-                text:
-                    '${postDetails['username']}  ${postDetails['description']}️',
+                text: '${post!.username}  ${post!.description}️',
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),

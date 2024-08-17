@@ -39,7 +39,7 @@ class UserPost {
       uid: snapShot['uid'],
       username: snapShot['username'],
       postId: snapShot['postId'],
-      datePublish: snapShot['datePublish'],
+      datePublish: (snapShot['datePublish'] as Timestamp).toDate(),
       photoUrl: snapShot['photoUrl'],
       profileImage: snapShot['profileImage'],
       likes: snapShot['likes'],

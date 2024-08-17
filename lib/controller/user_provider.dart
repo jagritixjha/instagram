@@ -6,7 +6,10 @@ class UserProvider extends ChangeNotifier {
   UserModel? _userModel;
   UserModel? get getUser => _userModel!;
 
-  Future<void> refreshUser({String? userUid}) async {
+  String? userUid;
+  UserProvider({this.userUid});
+
+  Future<void> refreshUser() async {
     UserModel user = await AuthMethods().getUserDetails(userUid);
     _userModel = user;
     notifyListeners();

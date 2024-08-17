@@ -1,18 +1,16 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/modal/post_model.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
 
 int? postLength;
 
 class PostGridView extends StatelessWidget {
-  PostGridView({
-    super.key,
-    required this.snapshot,
-    this.isProfile = false,
-  });
+  PostGridView({super.key, this.isProfile = false, required this.postSnapshot});
   final bool isProfile;
-
-  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  QuerySnapshot<Map<String, dynamic>> postSnapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +21,12 @@ class PostGridView extends StatelessWidget {
           crossAxisSpacing: 2,
           mainAxisSpacing: 2,
         ),
-        itemCount: snapshot.data!.docs.length,
+        itemCount: postSnapshot!.docs.length,
         itemBuilder: (context, index) {
-          var postDetails = snapshot.data!.docs[index];
-          postLength = snapshot.data!.docs.length;
+          var postDetails = postSnapshot!.docs[index];
+          final post = UserPost.fromSnap(postSnapshot.docs[index]);
+
+          postLength = postSnapshot.docs.length;
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -34,7 +34,6 @@ class PostGridView extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => HomeScreen(
                     post: postDetails,
-                    isProfile: isProfile,
                   ),
                 ),
               );
@@ -43,7 +42,7 @@ class PostGridView extends StatelessWidget {
               height: 210,
               width: 200,
               child: Image.network(
-                postDetails['photoUrl'],
+                post.photoUrl,
                 fit: BoxFit.cover,
               ),
             ),

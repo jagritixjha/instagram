@@ -19,7 +19,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? user = Provider.of<UserProvider>(context, listen: false).getUser;
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 32,

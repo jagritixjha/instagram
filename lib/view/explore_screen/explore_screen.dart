@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram/auth/auth_methods.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/modal/user_model.dart';
+import 'package:instagram/view/explore_screen/widgets/account_list_view.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
 import 'package:instagram/view/profile_screen/profile_screen.dart';
 import 'package:instagram/widgets/post_grid_view.dart';
@@ -65,43 +66,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       );
                     }
 
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: (snapshot.data as dynamic).docs.length,
-                        itemBuilder: (context, index) {
-                          var userDetails =
-                              (snapshot.data as dynamic).docs[index];
-                          return ListTile(
-                            visualDensity: VisualDensity.compact,
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                userDetails['photoUrl'],
-                              ),
-                              radius: 30,
-                            ),
-                            title: SmallText(
-                              textAlign: TextAlign.left,
-                              text: userDetails['userName'],
-                            ),
-                            subtitle: SmallText(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black54,
-                              textAlign: TextAlign.left,
-                              text: userDetails['bio'],
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProfileScreen(snapshot: userDetails),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
+                    return UserAccountsListView(
+                      userSnapshot: snapshot.data!,
                     );
                   })
               : FutureBuilder(
@@ -115,41 +81,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         color: true,
                       );
                     }
-                    return PostGridView(snapshot: snapshot);
-                    /*Expanded(
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 2,
-                          mainAxisSpacing: 2,
-                        ),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot post = snapshot.data!.docs[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(
-                                    post: post,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: SizedBox(
-                              height: 210,
-                              width: 200,
-                              child: Image.network(
-                                post['photoUrl'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );*/
+                    return PostGridView(postSnapshot: snapshot.data!);
                   }),
         ],
       ),
