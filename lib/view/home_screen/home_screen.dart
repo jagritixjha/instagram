@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/modal/user_model.dart';
-import 'package:instagram/widgets/post_card.dart';
+import 'package:instagram/view/home_screen/widget/post_card.dart';
 import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/small_text.dart';
-import 'package:instagram/widgets/text_button.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key, this.post, this.isProfile = false});
+  HomeScreen({
+    super.key,
+    this.post,
+    this.isProfile = false,
+  });
   final DocumentSnapshot? post;
   final bool isProfile;
   final String _userId = FirebaseAuth.instance.currentUser!.uid;

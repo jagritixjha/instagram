@@ -1,11 +1,7 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/modal/post_model.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
-
-int? postLength;
 
 class PostGridView extends StatelessWidget {
   PostGridView({super.key, this.isProfile = false, required this.postSnapshot});
@@ -21,12 +17,11 @@ class PostGridView extends StatelessWidget {
           crossAxisSpacing: 2,
           mainAxisSpacing: 2,
         ),
-        itemCount: postSnapshot!.docs.length,
+        itemCount: postSnapshot.docs.length,
         itemBuilder: (context, index) {
-          var postDetails = postSnapshot!.docs[index];
+          var postDetails = postSnapshot.docs[index];
           final post = UserPost.fromSnap(postSnapshot.docs[index]);
 
-          postLength = postSnapshot.docs.length;
           return GestureDetector(
             onTap: () {
               Navigator.push(

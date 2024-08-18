@@ -9,6 +9,7 @@ import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/modal/post_model.dart';
 import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/constants.dart';
+import 'package:instagram/view/profile_screen/followers_following_screen.dart';
 import 'package:instagram/widgets/action_button.dart';
 import 'package:instagram/widgets/post_grid_view.dart';
 import 'package:instagram/widgets/small_text.dart';
@@ -18,9 +19,11 @@ class ProfileCardWidget extends StatelessWidget {
   ProfileCardWidget({
     super.key,
     required this.user,
+    required this.postCount,
   });
   UserModel? user;
   String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  String postCount = '';
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,9 +41,6 @@ class ProfileCardWidget extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back_rounded),
                     )
                   : Container(),
-              // const SizedBox(
-              //   width: 16,
-              // ),
               SmallText(
                 text: user!.userName,
               ),
@@ -71,18 +71,50 @@ class ProfileCardWidget extends StatelessWidget {
               ),
               const Spacer(),
               CustomRichText(
-                str: postLength.toString(),
+                str: postCount,
                 subStr: 'posts',
               ),
               const Spacer(),
-              CustomRichText(
-                str: user!.followers.length.toString(),
-                subStr: 'followers',
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowersFollowingScreen(
+                        followersList: user!.followers,
+                        followingList: user!.following,
+                        userId: user!.uid,
+                        userName: user!.userName,
+                        index: 0,
+                      ),
+                    ),
+                  );
+                },
+                child: CustomRichText(
+                  str: user!.followers.length.toString(),
+                  subStr: 'followers',
+                ),
               ),
               const Spacer(),
-              CustomRichText(
-                str: user!.following.length.toString(),
-                subStr: 'following',
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowersFollowingScreen(
+                        followersList: user!.followers,
+                        followingList: user!.following,
+                        userId: user!.uid,
+                        userName: user!.userName,
+                        index: 1,
+                      ),
+                    ),
+                  );
+                },
+                child: CustomRichText(
+                  str: user!.following.length.toString(),
+                  subStr: 'following',
+                ),
               ),
             ],
           ),
@@ -124,13 +156,14 @@ class ProfileCardWidget extends StatelessWidget {
 }
 
 class CustomRichText extends StatelessWidget {
-  CustomRichText({
+  const CustomRichText({
     super.key,
     required this.str,
     required this.subStr,
   });
-  String str;
-  String subStr;
+  final String str;
+  final String subStr;
+
   @override
   Widget build(BuildContext context) {
     return RichText(
@@ -149,8 +182,10 @@ class CustomRichText extends StatelessWidget {
           TextSpan(
             text: '\n$subStr',
             style: GoogleFonts.poppins(
-              textStyle:
-                  const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+              ),
             ),
           ),
         ],

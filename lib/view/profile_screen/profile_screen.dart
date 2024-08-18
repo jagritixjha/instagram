@@ -26,9 +26,11 @@ class ProfileScreen extends StatelessWidget {
         .collection('posts')
         .where('uid', isEqualTo: userId)
         .get();
+    // int postCount = postData.docs.length;
     return {
       'userData': userData,
       'postData': postData,
+      'postCount': postData.docs.length.toString(),
     };
   }
 
@@ -53,6 +55,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 ProfileCardWidget(
                   user: userModel,
+                  postCount: snapshot.data!['postCount'],
                 ),
                 const SizedBox(
                   height: 10,

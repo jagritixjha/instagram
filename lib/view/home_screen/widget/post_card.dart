@@ -228,7 +228,6 @@ class _PostCardState extends State<PostCard> {
           height: 450,
           width: double.infinity,
           decoration: BoxDecoration(
-            // color: Colors.red,
             image: DecorationImage(
               image: NetworkImage(
                 post!.photoUrl,

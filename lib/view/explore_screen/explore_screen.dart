@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram/auth/auth_methods.dart';
 import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/modal/user_model.dart';
-import 'package:instagram/view/explore_screen/widgets/account_list_view.dart';
+import 'package:instagram/widgets/account_list_view.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
 import 'package:instagram/view/profile_screen/profile_screen.dart';
 import 'package:instagram/widgets/post_grid_view.dart';
@@ -25,12 +25,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
   TextEditingController searchController = TextEditingController();
 
   bool showUser = false;
-  Future fetchData() async {
-    return await FirebaseFirestore.instance
-        .collection('user')
-        .where('userName', isGreaterThanOrEqualTo: searchController.text)
-        .get();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +50,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
           ),
           showUser
               ? FutureBuilder(
-                  future: fetchData(),
+                  future: FirebaseFirestore.instance
+                      .collection('user')
+                      .where('userName',
+                          isGreaterThanOrEqualTo: searchController.text)
+                      .get(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Expanded(
@@ -67,6 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     }
 
                     return UserAccountsListView(
+                      itemCount: snapshot.data!.docs.length,
                       userSnapshot: snapshot.data!,
                     );
                   })
