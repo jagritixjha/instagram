@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/widgets/account_list_view.dart';
+import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/small_text.dart';
 
 class FollowersFollowingScreen extends StatefulWidget {
@@ -24,7 +28,18 @@ class FollowersFollowingScreen extends StatefulWidget {
 }
 
 class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
-  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> _fetchUserDataFromList(
+      List userIds) async {
+    if (userIds.isEmpty) {
+      return Future.value(null); // Return null if the list is empty
+    }
+
+    return FirebaseFirestore.instance
+        .collection('user')
+        .where(FieldPath.documentId, whereIn: userIds)
+        .get();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -37,6 +52,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
           Row(
             children: [
               TabButtons(
+                isSelected: widget.index == 0,
                 text: 'Followers',
                 onTap: () {
                   setState(() {
@@ -45,6 +61,7 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
                 },
               ),
               TabButtons(
+                isSelected: widget.index == 1,
                 text: 'Following',
                 onTap: () {
                   setState(() {
@@ -54,25 +71,30 @@ class _FollowersFollowingScreenState extends State<FollowersFollowingScreen> {
               ),
             ],
           ),
-          FutureBuilder(
-            future: FirebaseFirestore.instance
-                .collection('user')
-                .where(FieldPath.documentId, whereIn: widget.followingList)
-                .get(),
-            builder: (context, snapshot) => Expanded(
-              child: IndexedStack(
-                index: widget.index,
-                children: [
-                  UserAccountsListView(
-                    userSnapshot: snapshot.data!,
-                    itemCount: snapshot.data!.docs.length,
-                  ),
-                  UserAccountsListView(
-                    userSnapshot: snapshot.data!,
-                    itemCount: snapshot.data!.docs.length,
-                  ),
-                ],
-              ),
+          Expanded(
+            child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              future: widget.index == 0
+                  ? _fetchUserDataFromList(widget.followersList)
+                  : _fetchUserDataFromList(widget.followingList),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CustomProgressIndicator(
+                    color: true,
+                  );
+                } else if (!snapshot.hasData ||
+                    snapshot.data!.docs.isEmpty ||
+                    snapshot.data == null) {
+                  return Center(
+                    child: SmallText(
+                      text: 'No users found.',
+                    ),
+                  );
+                }
+
+                return UserAccountsListView(
+                  userSnapshot: snapshot.data!,
+                );
+              },
             ),
           )
         ],
@@ -86,9 +108,11 @@ class TabButtons extends StatelessWidget {
     super.key,
     required this.text,
     this.onTap,
+    required this.isSelected,
   });
   void Function()? onTap;
   String text;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +122,12 @@ class TabButtons extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
           padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(
-              bottom: BorderSide(color: Colors.black87, width: 2),
+              bottom: BorderSide(
+                color: isSelected ? Colors.black87 : Colors.transparent,
+                width: 1.4,
+              ),
             ),
           ),
           child: SmallText(

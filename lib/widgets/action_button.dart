@@ -20,12 +20,13 @@ class SecondaryActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
+      style: TextButton.styleFrom(
         alignment: Alignment.center,
         backgroundColor: bgColor ?? Colors.indigo.shade50,
         visualDensity: VisualDensity.compact,
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        minimumSize: isProfile ? const Size(180, 40) : null,
+        minimumSize:
+            isProfile ? Size(MediaQuery.of(context).size.width - 24, 40) : null,
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),

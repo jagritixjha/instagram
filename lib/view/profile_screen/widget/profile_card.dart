@@ -1,29 +1,56 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:instagram/controller/post_provider.dart';
-import 'package:instagram/controller/user_provider.dart';
-import 'package:instagram/modal/post_model.dart';
+import 'package:instagram/auth/firebase_methods.dart';
 import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/constants.dart';
+import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/view/profile_screen/followers_following_screen.dart';
 import 'package:instagram/widgets/action_button.dart';
-import 'package:instagram/widgets/post_grid_view.dart';
 import 'package:instagram/widgets/small_text.dart';
-import 'package:provider/provider.dart';
 
-class ProfileCardWidget extends StatelessWidget {
+class ProfileCardWidget extends StatefulWidget {
   ProfileCardWidget({
     super.key,
     required this.user,
     required this.postCount,
   });
   UserModel? user;
-  String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
   String postCount = '';
+
+  @override
+  State<ProfileCardWidget> createState() => _ProfileCardWidgetState();
+}
+
+class _ProfileCardWidgetState extends State<ProfileCardWidget> {
+  final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  late bool isFollowing;
+  void followAccount() async {
+    String response =
+        await FirebaseMethod().followAccount(isFollowing, widget.user!.uid);
+    if (response == 'success') {
+      AppExtension.showCustomSnackbar(
+          msg: isFollowing ? 'account followed' : 'account unfollowed',
+          context: context);
+      setState(() {
+        isFollowing = !isFollowing;
+      });
+      log(isFollowing.toString());
+    } else {
+      AppExtension.showCustomSnackbar(msg: response, context: context);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isFollowing = widget.user!.followers.contains(_currentUserId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -33,8 +60,11 @@ class ProfileCardWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              user!.uid != _currentUserId
+              widget.user!.uid != _currentUserId
                   ? IconButton(
+                      visualDensity: VisualDensity.compact,
+                      padding:
+                          const EdgeInsets.only(right: 30, bottom: 16, top: 16),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -42,10 +72,10 @@ class ProfileCardWidget extends StatelessWidget {
                     )
                   : Container(),
               SmallText(
-                text: user!.userName,
+                text: widget.user!.userName,
               ),
               const Spacer(),
-              user!.uid == _currentUserId
+              widget.user!.uid == _currentUserId
                   ? IconButton(
                       onPressed: () {
                         FirebaseAuth.instance.signOut();
@@ -67,11 +97,11 @@ class ProfileCardWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(user!.photoUrl),
+                backgroundImage: NetworkImage(widget.user!.photoUrl),
               ),
               const Spacer(),
               CustomRichText(
-                str: postCount,
+                str: widget.postCount,
                 subStr: 'posts',
               ),
               const Spacer(),
@@ -81,17 +111,17 @@ class ProfileCardWidget extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => FollowersFollowingScreen(
-                        followersList: user!.followers,
-                        followingList: user!.following,
-                        userId: user!.uid,
-                        userName: user!.userName,
+                        followersList: widget.user!.followers,
+                        followingList: widget.user!.following,
+                        userId: widget.user!.uid,
+                        userName: widget.user!.userName,
                         index: 0,
                       ),
                     ),
                   );
                 },
                 child: CustomRichText(
-                  str: user!.followers.length.toString(),
+                  str: widget.user!.followers.length.toString(),
                   subStr: 'followers',
                 ),
               ),
@@ -102,17 +132,17 @@ class ProfileCardWidget extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => FollowersFollowingScreen(
-                        followersList: user!.followers,
-                        followingList: user!.following,
-                        userId: user!.uid,
-                        userName: user!.userName,
+                        followersList: widget.user!.followers,
+                        followingList: widget.user!.following,
+                        userId: widget.user!.uid,
+                        userName: widget.user!.userName,
                         index: 1,
                       ),
                     ),
                   );
                 },
                 child: CustomRichText(
-                  str: user!.following.length.toString(),
+                  str: widget.user!.following.length.toString(),
                   subStr: 'following',
                 ),
               ),
@@ -122,13 +152,13 @@ class ProfileCardWidget extends StatelessWidget {
             height: 8,
           ),
           SmallText(
-            text: user!.userName,
+            text: widget.user!.userName,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
           SmallText(
-            text: user!.bio,
+            text: widget.user!.bio,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -136,18 +166,17 @@ class ProfileCardWidget extends StatelessWidget {
           const SizedBox(
             height: 8,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SecondaryActionButton(
-                text: user!.uid == _currentUserId ? 'Edit profile' : 'Follow',
-                isProfile: true,
-                bgColor: primaryColor,
-              ),
-              SecondaryActionButton(
-                text: 'Message',
-              ),
-            ],
+          SecondaryActionButton(
+            text: widget.user!.uid == _currentUserId
+                ? 'Edit profile'
+                : isFollowing
+                    ? 'Following'
+                    : 'Follow',
+            isProfile: true,
+            bgColor: isFollowing ? Colors.blueAccent.shade200 : primaryColor,
+            onPressed: () {
+              widget.user!.uid != _currentUserId ? followAccount() : null;
+            },
           )
         ],
       ),

@@ -28,6 +28,7 @@ class PostGridView extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeScreen(
+                    isProfile: isProfile,
                     post: postDetails,
                   ),
                 ),

@@ -1,18 +1,10 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
-import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/widgets/post_grid_view.dart';
 import 'package:instagram/view/profile_screen/widget/profile_card.dart';
 import 'package:instagram/widgets/progress_indicator.dart';
-import 'package:instagram/widgets/small_text.dart';
-import 'package:provider/provider.dart';
-
-import '../../modal/post_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   final String userId;
@@ -26,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
         .collection('posts')
         .where('uid', isEqualTo: userId)
         .get();
-    // int postCount = postData.docs.length;
+
     return {
       'userData': userData,
       'postData': postData,
@@ -36,8 +28,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? userProvider =
-        Provider.of<UserProvider>(context, listen: false).getUser;
     return Scaffold(
       body: FutureBuilder(
           future: _getUserAndPostData(),
@@ -56,9 +46,6 @@ class ProfileScreen extends StatelessWidget {
                 ProfileCardWidget(
                   user: userModel,
                   postCount: snapshot.data!['postCount'],
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 PostGridView(
                   isProfile: true,

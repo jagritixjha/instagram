@@ -52,21 +52,28 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ? FutureBuilder(
                   future: FirebaseFirestore.instance
                       .collection('user')
-                      .where('userName',
-                          isGreaterThanOrEqualTo: searchController.text)
+                      .where(
+                        'userName',
+                        isGreaterThanOrEqualTo: searchController.text,
+                      )
                       .get(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Expanded(
-                        child: CustomProgressIndicator(
-                          color: true,
-                        ),
-                      );
-                    }
-
-                    return UserAccountsListView(
-                      itemCount: snapshot.data!.docs.length,
-                      userSnapshot: snapshot.data!,
+                    return Expanded(
+                      child: snapshot.connectionState == ConnectionState.waiting
+                          ? CustomProgressIndicator(
+                              color: true,
+                            )
+                          : (!snapshot.hasData ||
+                                  snapshot.data!.docs.isEmpty ||
+                                  snapshot.data == null)
+                              ? const Center(
+                                  child: SmallText(
+                                    text: 'No users found.',
+                                  ),
+                                )
+                              : UserAccountsListView(
+                                  userSnapshot: snapshot.data!,
+                                ),
                     );
                   })
               : FutureBuilder(
@@ -76,8 +83,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       .get(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return CustomProgressIndicator(
-                        color: true,
+                      return Expanded(
+                        child: CustomProgressIndicator(
+                          color: true,
+                        ),
                       );
                     }
                     return PostGridView(postSnapshot: snapshot.data!);

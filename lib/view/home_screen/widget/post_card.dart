@@ -160,9 +160,12 @@ class _PostCardState extends State<PostCard> {
         .collection('comments')
         .get();
 
-    setState(() {
-      commentsCount = snapshot.docs.length.toString();
-    });
+    if (mounted) {
+      // Check if the widget is still mounted
+      setState(() {
+        commentsCount = snapshot.docs.length.toString();
+      });
+    }
     return snapshot;
   }
 
