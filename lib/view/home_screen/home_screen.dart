@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,10 +16,12 @@ class HomeScreen extends StatelessWidget {
     super.key,
     this.post,
     this.isProfile = false,
-  });
+    String? userId,
+  }) : userId = userId ?? FirebaseAuth.instance.currentUser!.uid;
+
   final DocumentSnapshot? post;
   final bool isProfile;
-  final String _userId = FirebaseAuth.instance.currentUser!.uid;
+  String? userId;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               )
             : SmallText(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
                 text: isProfile ? 'Posts' : 'Explore',
               ),
@@ -76,21 +80,8 @@ class HomeScreen extends StatelessWidget {
               fontSize: 20,
             ),
           ),
-          FutureBuilder(
-            future: post == null
-                ? FirebaseFirestore.instance
-                    .collection('posts')
-                    .orderBy('datePublish', descending: true)
-                    .get()
-                : isProfile
-                    ? FirebaseFirestore.instance
-                        .collection('posts')
-                        .where('uid', isEqualTo: _userId)
-                        .get()
-                    : FirebaseFirestore.instance
-                        .collection('posts')
-                        .startAtDocument(post!)
-                        .get(),
+          FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            future: fetchPostData(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Expanded(
@@ -121,5 +112,26 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchPostData() async {
+    if (post == null) {
+      return await FirebaseFirestore.instance
+          .collection('posts')
+          .orderBy('datePublish', descending: true)
+          .get();
+    } else if (isProfile) {
+      return await FirebaseFirestore.instance
+          .collection('posts')
+          .where('uid', isEqualTo: userId)
+          .get();
+    } else if (post != null) {
+      return await FirebaseFirestore.instance
+          .collection('posts')
+          .startAtDocument(post!) // Ensure post! is valid
+          .get();
+    } else {
+      return Future.error('Invalid post parameter');
+    }
   }
 }

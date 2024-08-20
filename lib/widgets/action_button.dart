@@ -26,7 +26,7 @@ class SecondaryActionButton extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         minimumSize:
-            isProfile ? Size(MediaQuery.of(context).size.width - 24, 40) : null,
+            isProfile ? Size(MediaQuery.of(context).size.width - 24, 44) : null,
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),

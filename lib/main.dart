@@ -115,9 +115,9 @@ class MyApp extends StatelessWidget {
       Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
 
       // Check if the document data is not null and doesn't contain 'savedPosts'
-      if (data != null && !data.containsKey('savedPosts')) {
+      if (data != null && !data.containsKey('name')) {
         // Update the document by adding the 'savedPosts' field with an empty array
-        await usersCollection.doc(doc.id).update({'savedPosts': []});
+        await usersCollection.doc(doc.id).update({'name': ''});
       }
     }
 

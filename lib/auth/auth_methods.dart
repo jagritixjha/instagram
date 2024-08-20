@@ -55,6 +55,7 @@ class AuthMethods {
 
         UserModel userModel = UserModel(
           userName: userName,
+          name: '',
           email: email,
           password: password,
           bio: bio,

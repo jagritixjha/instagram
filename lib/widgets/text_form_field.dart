@@ -9,9 +9,11 @@ class CustomTextFormField extends StatefulWidget {
     this.onFieldSubmitted,
     this.obscureText = false,
     this.isPassword = false,
+    this.initialValue,
   });
 
   String hintText;
+  String? initialValue;
   TextEditingController controller;
   bool obscureText;
   bool isPassword;
@@ -67,6 +69,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      initialValue: widget.initialValue,
       onFieldSubmitted: widget.onFieldSubmitted,
     );
   }

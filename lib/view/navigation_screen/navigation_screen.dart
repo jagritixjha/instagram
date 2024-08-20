@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram/view/edit_screen/edit_details_screen.dart';
 import 'package:instagram/view/explore_screen/explore_screen.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
 import 'package:instagram/view/profile_screen/profile_screen.dart';
@@ -19,7 +20,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     HomeScreen(),
     ExploreScreen(),
     UploadPostScreen(),
-    const ReelsScreen(),
+    EditDetailsScreen(),
     ProfileScreen(),
   ];
 
@@ -52,7 +53,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
           BottomNavigationBarItem(
             label: '',
             icon: Icon(
-              Icons.video_collection_outlined,
+              Icons.edit,
             ),
           ),
           BottomNavigationBarItem(

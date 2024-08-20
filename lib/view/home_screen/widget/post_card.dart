@@ -294,7 +294,7 @@ class _PostCardState extends State<PostCard> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: CustomTextButton(
-            text: 'View all 1,578 comments',
+            text: 'View all comments',
             fontWeight: FontWeight.w500,
             textColor: Colors.grey.shade600,
             onTap: () {},

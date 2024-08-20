@@ -40,6 +40,7 @@ class UserAccountsListView extends StatelessWidget {
             text: userDetails.bio,
           ),
           onTap: () {
+            log(userDetails.uid.toString());
             Navigator.push(
               context,
               MaterialPageRoute(

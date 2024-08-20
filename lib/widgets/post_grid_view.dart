@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram/modal/post_model.dart';
@@ -19,9 +21,7 @@ class PostGridView extends StatelessWidget {
         ),
         itemCount: postSnapshot.docs.length,
         itemBuilder: (context, index) {
-          var postDetails = postSnapshot.docs[index];
           final post = UserPost.fromSnap(postSnapshot.docs[index]);
-
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -29,7 +29,8 @@ class PostGridView extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => HomeScreen(
                     isProfile: isProfile,
-                    post: postDetails,
+                    userId: post.uid,
+                    post: postSnapshot.docs[index],
                   ),
                 ),
               );

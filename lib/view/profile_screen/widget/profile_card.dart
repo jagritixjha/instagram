@@ -7,6 +7,7 @@ import 'package:instagram/auth/firebase_methods.dart';
 import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/constants.dart';
 import 'package:instagram/utils/image_picker.dart';
+import 'package:instagram/view/edit_screen/edit_details_screen.dart';
 import 'package:instagram/view/profile_screen/followers_following_screen.dart';
 import 'package:instagram/widgets/action_button.dart';
 import 'package:instagram/widgets/small_text.dart';
@@ -149,10 +150,10 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             ],
           ),
           const SizedBox(
-            height: 8,
+            height: 12,
           ),
           SmallText(
-            text: widget.user!.userName,
+            text: widget.user!.name,
             textAlign: TextAlign.start,
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -164,7 +165,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             fontWeight: FontWeight.w500,
           ),
           const SizedBox(
-            height: 8,
+            height: 12,
           ),
           SecondaryActionButton(
             text: widget.user!.uid == _currentUserId
@@ -175,7 +176,14 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             isProfile: true,
             bgColor: isFollowing ? Colors.blueAccent.shade200 : primaryColor,
             onPressed: () {
-              widget.user!.uid != _currentUserId ? followAccount() : null;
+              widget.user!.uid != _currentUserId
+                  ? followAccount()
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditDetailsScreen(),
+                      ),
+                    );
             },
           )
         ],

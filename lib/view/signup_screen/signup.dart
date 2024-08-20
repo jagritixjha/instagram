@@ -28,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
   void selectProfileImage() async {
     Uint8List pickedImage = await AppExtension.customImagePicker(
       imageSource: ImageSource.gallery,
@@ -52,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
         userName: usernameController.text.trim(),
-        bio: 'hello there!!',
+        bio: '',
         file: _pickedProfileImage!,
       );
       setState(() {
@@ -84,7 +85,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // backgroundColor: Colors.black54,
       body: SafeArea(
         child: Padding(
           padding: padding,
