@@ -152,12 +152,14 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
           const SizedBox(
             height: 12,
           ),
-          SmallText(
-            text: widget.user!.name,
-            textAlign: TextAlign.start,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
+          widget.user!.name.isNotEmpty
+              ? SmallText(
+                  text: widget.user!.name,
+                  textAlign: TextAlign.start,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                )
+              : Container(),
           SmallText(
             text: widget.user!.bio,
             textAlign: TextAlign.start,
