@@ -80,8 +80,8 @@ class HomeScreen extends StatelessWidget {
               fontSize: 20,
             ),
           ),
-          FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            future: fetchPostData(),
+          StreamBuilder(
+            stream: fetchPostData(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Expanded(
@@ -90,23 +90,37 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               }
-              return Expanded(
-                child: ListView.separated(
-                  itemCount: (snapshot.data as dynamic).docs.length,
-                  itemBuilder: (context, index) => PostCard(
-                    snapshot: snapshot,
-                    index: index,
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CustomProgressIndicator(
+                  color: true,
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Text('No comments yet');
+              } else {
+                log('--------error');
+                return Expanded(
+                  child: ListView.separated(
+                    itemCount: (snapshot.data as dynamic).docs.length,
+                    itemBuilder: (context, index) {
+                      log('--------error2');
+                      return PostCard(
+                        snapshot: snapshot,
+                        index: index,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        height: 40,
+                        color: Colors.indigo.shade50,
+                        endIndent: 16,
+                        indent: 16,
+                      );
+                    },
                   ),
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      height: 40,
-                      color: Colors.indigo.shade50,
-                      endIndent: 16,
-                      indent: 16,
-                    );
-                  },
-                ),
-              );
+                );
+              }
             },
           ),
         ],
@@ -114,24 +128,24 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> fetchPostData() async {
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchPostData() {
     if (post == null) {
-      return await FirebaseFirestore.instance
+      return FirebaseFirestore.instance
           .collection('posts')
           .orderBy('datePublish', descending: true)
-          .get();
+          .snapshots();
     } else if (isProfile) {
-      return await FirebaseFirestore.instance
+      return FirebaseFirestore.instance
           .collection('posts')
           .where('uid', isEqualTo: userId)
-          .get();
+          .snapshots();
     } else if (post != null) {
-      return await FirebaseFirestore.instance
+      return FirebaseFirestore.instance
           .collection('posts')
           .startAtDocument(post!) // Ensure post! is valid
-          .get();
+          .snapshots();
     } else {
-      return Future.error('Invalid post parameter');
+      return Stream.error('Invalid post parameter');
     }
   }
 }

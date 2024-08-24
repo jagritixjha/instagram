@@ -11,6 +11,7 @@ import 'package:instagram/modal/user_model.dart';
 import 'package:instagram/utils/image_picker.dart';
 import 'package:instagram/widgets/action_button.dart';
 import 'package:instagram/widgets/primary_button.dart';
+import 'package:instagram/widgets/progress_indicator.dart';
 import 'package:instagram/widgets/small_text.dart';
 import 'package:instagram/widgets/text_button.dart';
 import 'package:instagram/widgets/text_form_field.dart';
@@ -75,7 +76,7 @@ class _PostCardState extends State<PostCard> {
       commentController.text,
       postDetails['uid'],
       postDetails['username'],
-      postDetails['profileImage'],
+      user!.photoUrl,
     );
     if (response == 'success') {
       AppExtension.showCustomSnackbar(msg: 'comment posted', context: context);
@@ -117,10 +118,15 @@ class _PostCardState extends State<PostCard> {
 
   UserModel? user;
   UserPost? post;
+
   @override
   void initState() {
     super.initState();
-    user = Provider.of<UserProvider>(context, listen: false).getUser;
+    postDetails;
+
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    user = userProvider.getUser;
+    log('------------${user!.name}');
     following = user!.following.contains(postDetails['uid']);
     isSaved = user!.savedPosts.contains(postDetails['postId']);
     isLiked = postDetails['likes'].contains(user!.uid);
@@ -152,7 +158,8 @@ class _PostCardState extends State<PostCard> {
   }
 
   String commentsCount = 'Loading...';
-  get commentSnapshot async {
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      get commentSnapshot async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection('posts')
@@ -166,7 +173,7 @@ class _PostCardState extends State<PostCard> {
         commentsCount = snapshot.docs.length.toString();
       });
     }
-    return snapshot;
+    return snapshot.docs;
   }
 
   @override
@@ -254,7 +261,9 @@ class _PostCardState extends State<PostCard> {
               text: commentsCount,
               icon: CupertinoIcons.chat_bubble,
               // icon: CupertinoIcons.chat_bubble,
-              onPressed: buildCommentSection,
+              onPressed: () {
+                buildCommentSection();
+              },
             ),
             const SizedBox(
               width: 4,
@@ -314,16 +323,59 @@ class _PostCardState extends State<PostCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CustomTextFormField(
-                  hintText: 'write comment', controller: commentController),
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('posts')
+                    .doc(postDetails['postId'])
+                    .collection('comments')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CustomProgressIndicator(
+                      color: true,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Text('No comments yet');
+                  } else {
+                    return ListView.builder(
+                      shrinkWrap:
+                          true, // This allows ListView.builder to work inside a Column
+                      itemCount: int.tryParse(commentsCount),
+                      itemBuilder: (context, index) {
+                        var comment = snapshot.data!.docs[index].data();
+                        return ListTile(
+                          titleAlignment: ListTileTitleAlignment.bottom,
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage(comment['profilePic']),
+                          ),
+                          title: Text(comment['name']),
+                          subtitle: Text(comment['text']),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
               const Spacer(),
+              CustomTextFormField(
+                hintText: 'Write comment',
+                controller: commentController,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
               PrimaryButton(
                 text: 'Post comment',
                 onPressed: () {
                   postComment();
                   Navigator.pop(context);
                 },
-              )
+              ),
             ],
           ),
         );

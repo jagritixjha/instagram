@@ -4,13 +4,10 @@ import 'package:instagram/modal/user_model.dart';
 
 class UserProvider extends ChangeNotifier {
   UserModel? _userModel;
-  UserModel? get getUser => _userModel!;
-
-  String? userUid;
-  UserProvider({this.userUid});
+  UserModel? get getUser => _userModel;
 
   Future<void> refreshUser() async {
-    UserModel user = await AuthMethods().getUserDetails(userUid);
+    UserModel user = await AuthMethods().getUserDetails();
     _userModel = user;
     notifyListeners();
   }
