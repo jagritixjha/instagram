@@ -104,6 +104,10 @@ class _EditDetailsScreenState extends State<EditDetailsScreen> {
           'userName': usernameController!.text,
           'photoUrl': photoUrl,
         });
+
+        UserProvider refreshUser = Provider.of(context, listen: false);
+        await refreshUser.refreshUser();
+
         AppExtension.showCustomSnackbar(
             msg: 'Details updated', context: context);
         Navigator.canPop(context);
@@ -117,6 +121,7 @@ class _EditDetailsScreenState extends State<EditDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log('-----built');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -197,7 +202,14 @@ class _EditDetailsScreenState extends State<EditDetailsScreen> {
             const SizedBox(
               height: 44,
             ),
-            PrimaryButton(text: 'Done', onPressed: updateDetails)
+            PrimaryButton(
+              text: 'Done',
+              onPressed: () {
+                setState(() {
+                  updateDetails();
+                });
+              },
+            )
           ],
         ),
       ),

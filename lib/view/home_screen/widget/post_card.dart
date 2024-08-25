@@ -37,6 +37,8 @@ class _PostCardState extends State<PostCard> {
   bool isLiked = false;
   bool isSaved = false;
   bool following = false;
+  UserModel? user;
+  UserPost? post;
 
   dynamic get postDetails {
     return widget.snapshot.data!.docs[widget.index];
@@ -116,25 +118,6 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  UserModel? user;
-  UserPost? post;
-
-  @override
-  void initState() {
-    super.initState();
-    postDetails;
-
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
-    user = userProvider.getUser;
-    log('------------${user!.name}');
-    following = user!.following.contains(postDetails['uid']);
-    isSaved = user!.savedPosts.contains(postDetails['postId']);
-    isLiked = postDetails['likes'].contains(user!.uid);
-    commentSnapshot;
-    post =
-        UserPost.fromSnap(widget.snapshot.data!.docs.elementAt(widget.index));
-  }
-
   Future<void> likePost() async {
     setState(() {
       isLiked = !isLiked;
@@ -168,12 +151,33 @@ class _PostCardState extends State<PostCard> {
         .get();
 
     if (mounted) {
-      // Check if the widget is still mounted
       setState(() {
         commentsCount = snapshot.docs.length.toString();
       });
     }
     return snapshot.docs;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.snapshot.data != null && widget.snapshot.data!.docs.isNotEmpty) {
+      postDetails;
+
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+      user = userProvider.getUser;
+      post =
+          UserPost.fromSnap(widget.snapshot.data!.docs.elementAt(widget.index));
+
+      if (user != null) {
+        following = user!.following.contains(postDetails['uid']);
+        isSaved = user!.savedPosts.contains(postDetails['postId']);
+        isLiked = postDetails['likes'].contains(user!.uid);
+      }
+
+      commentSnapshot;
+    }
   }
 
   @override
@@ -260,7 +264,6 @@ class _PostCardState extends State<PostCard> {
             PostActionButtons(
               text: commentsCount,
               icon: CupertinoIcons.chat_bubble,
-              // icon: CupertinoIcons.chat_bubble,
               onPressed: () {
                 buildCommentSection();
               },

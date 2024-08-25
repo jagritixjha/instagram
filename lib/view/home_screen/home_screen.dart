@@ -99,12 +99,10 @@ class HomeScreen extends StatelessWidget {
               } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return const Text('No comments yet');
               } else {
-                log('--------error');
                 return Expanded(
                   child: ListView.separated(
                     itemCount: (snapshot.data as dynamic).docs.length,
                     itemBuilder: (context, index) {
-                      log('--------error2');
                       return PostCard(
                         snapshot: snapshot,
                         index: index,

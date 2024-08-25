@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:instagram/controller/user_provider.dart';
 import 'package:instagram/view/edit_screen/edit_details_screen.dart';
 import 'package:instagram/view/explore_screen/explore_screen.dart';
 import 'package:instagram/view/home_screen/home_screen.dart';
 import 'package:instagram/view/profile_screen/profile_screen.dart';
 import 'package:instagram/view/reels_screen/reels_screen.dart';
 import 'package:instagram/view/upload_post_screen/upload_screen.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({super.key});
