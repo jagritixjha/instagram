@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram/auth/storage_methods.dart';
@@ -15,7 +14,7 @@ import 'package:instagram/widgets/text_form_field.dart';
 import 'package:provider/provider.dart';
 
 class EditDetailsScreen extends StatefulWidget {
-  EditDetailsScreen({super.key});
+  const EditDetailsScreen({super.key});
 
   @override
   State<EditDetailsScreen> createState() => _EditDetailsScreenState();
@@ -118,6 +117,15 @@ class _EditDetailsScreenState extends State<EditDetailsScreen> {
       AppExtension.showCustomSnackbar(msg: e.toString(), context: context);
     }
   }
+
+  // @override
+  // void dispose() {
+  //   emailController!.dispose();
+  //   usernameController!.dispose();
+  //   nameController!.dispose();
+  //   bioController!.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
