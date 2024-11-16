@@ -25,57 +25,80 @@ The Instagram Clone App is a mobile application built with Flutter that mimics t
 - **Post Interactions**:
   - Like or unlike posts.
   - Comment on posts to engage with other users.
-  
+
+---
+
 ## Screenshots
 
-<table>
-  <tr>
-    <td style="text-align: center;">
-      <strong>✨ Login Screen</strong><br>
-      <img src="screenshots/screenshot1.png" alt="Login Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Signup Screen</strong><br>
-      <img src="screenshots/screenshot2.png" alt="Signup Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Home Screen</strong><br>
-      <img src="screenshots/screenshot3.png" alt="Home Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Explore Screen</strong><br>
-      <img src="screenshots/screenshot4.png" alt="Explore Screen" style="max-width: 100%; height: auto;">
-    </td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">
-      <strong>✨ Profile Screen</strong><br>
-      <img src="screenshots/screenshot5.png" alt="Profile Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Edit Profile Screen</strong><br>
-      <img src="screenshots/screenshot6.png" alt="Edit Profile Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Upload Post Screen</strong><br>
-      <img src="screenshots/screenshot7.png" alt="Upload Post Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Post Details Screen</strong><br>
-      <img src="screenshots/screenshot8.png" alt="Post Details Screen" style="max-width: 100%; height: auto;">
-    </td>
-  </tr>
-  <tr>
-    <td style="text-align: center;">
-      <strong>✨ Post Interaction Screen</strong><br>
-      <img src="screenshots/screenshot9.png" alt="Post Interaction Screen" style="max-width: 100%; height: auto;">
-    </td>
-    <td style="text-align: center;">
-      <strong>✨ Delete Post Confirmation</strong><br>
-      <img src="screenshots/screenshot10.png" alt="Delete Post Confirmation" style="max-width: 100%; height: auto;">
-    </td>
-  </tr>
+<table style="border-collapse: collapse; width: 100%;">
+<tr>
+<th colspan="4" style="text-align: center; border: 0;">Screenshots</th>
+</tr>
+<tr>
+<td style="width: 250px; border: 0;">
+
+<img src="screenshots/screenshot1.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot2.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot3.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot4.png" height="auto" />
+
+</td>
+
+</tr>
+
+<tr>
+<td style="width: 250px; border: 0;">
+
+<img src="screenshots/screenshot5.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot6.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot7.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot8.png" height="auto" />
+
+</td>
+
+</tr>
+
+<tr>
+<td style="width: 250px; border: 0;">
+
+<img src="screenshots/screenshot9.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot10.png" height="auto" />
+
+
+</tr>
+
 </table>
+
+
+---
 
 ## How to Use
 
