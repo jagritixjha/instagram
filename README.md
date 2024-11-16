@@ -91,7 +91,16 @@ The Instagram Clone App is a mobile application built with Flutter that mimics t
 <td style="width: 220px; border: 0;">
 
 <img src="screenshots/screenshot10.png" height="auto" />
+</td>
+<td style="width: 250px; border: 0;">
 
+<img src="screenshots/screenshot11.png" height="auto" />
+
+</td>
+<td style="width: 220px; border: 0;">
+
+<img src="screenshots/screenshot12.png" height="auto" />
+</td>
 
 </tr>
 
